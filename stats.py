@@ -21,19 +21,40 @@ def get_repos():
 def get_total_commits(repos):
     total_commits = 0
     for repo in repos:
+        print(f"Processing repo: {repo['name']}")
         branch = repo['default_branch']
         commits_url = f"https://api.github.com/repos/{USER_NAME}/{repo['name']}/commits"
-        params = {'author': USER_NAME, 'sha': branch}  # Remove per_page=1
-        r = requests.get(commits_url, headers=HEADERS, params=params)
         
-        if 'Link' in r.headers and 'last' in r.links:
-            last_url = r.links['last']['url']
-            last_page = int(last_url.split('page=')[1].split('&')[0])
-            total_commits += last_page
-        elif r.status_code == 200:
-            total_commits += len(r.json())  # Now this will count all commits on the page
-    return total_commits    
+        # Start with page 1
+        page = 1
+        repo_commits = 0
+        
+        while True:
+            params = {'author': USER_NAME, 'sha': branch, 'per_page': 100, 'page': page}
+            r = requests.get(commits_url, headers=HEADERS, params=params)
+            
+            if r.status_code != 200:
+                print(f"Failed to get commits for {repo['name']} (page {page}): {r.status_code}")
+                break
+                
+            commits = r.json()
+            if not commits:  # No more commits
+                break
+                
+            repo_commits += len(commits)
+            
+            # less than 100 commits = last page
+            if len(commits) < 100:
+                break
+                
+            page += 1
+        
+        print(f"Found {repo_commits} commits in {repo['name']}")
+        total_commits += repo_commits
     
+    print(f"Total commits across all repos: {total_commits}")
+    return total_commits    
+
 def get_total_loc(repos):
     loc_add = 0
     loc_del = 0
