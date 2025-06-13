@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 from lxml import etree
 
 if not os.environ.get('ACCESS_TOKEN'):
