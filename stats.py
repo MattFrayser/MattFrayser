@@ -60,16 +60,40 @@ def get_total_loc(repos):
     loc_del = 0
     for repo in repos:
         url = f"https://api.github.com/repos/{USER_NAME}/{repo['name']}/stats/code_frequency"
-        r = requests.get(url, headers=HEADERS)
-        if r.status_code == 202:
-            # GitHub is generating stats, skip for now
-            continue
-        if r.status_code == 200:
-            stats = r.json()
-            for week in stats:
-                loc_add += week[1]
-                loc_del += abs(week[2])
-    return [loc_add, loc_del, loc_add - loc_del]
+        max_retries = 3
+        for attempt in range(max_retries):
+            r = requests.get(url, headers=HEADERS)
+            
+            if r.status_code == 200:
+                stats = r.json()
+                if stats:  # Make sure stats is not None or empty
+                    repo_add = 0
+                    repo_del = 0
+                    for week in stats:
+                        repo_add += week[1]
+                        repo_del += abs(week[2])
+                    
+                    print(f"  {repo['name']}: +{repo_add:,} -{repo_del:,}")
+                    loc_add += repo_add
+                    loc_del += repo_del
+                break
+                
+            elif r.status_code == 202:
+                print(f"  {repo['name']}: Stats generating, waiting... (attempt {attempt + 1})")
+                if attempt < max_retries - 1:
+                    time.sleep(2)  # Wait 2 seconds before retry
+                else:
+                    print(f"  {repo['name']}: Skipped after {max_retries} attempts")
+            else:
+                print(f"  {repo['name']}: Error {r.status_code}")
+                break
+        
+        # Small delay between repos
+        time.sleep(0.2)
+    
+    net_loc = loc_add - loc_del
+    print(f"Total LOC: +{loc_add:,} -{loc_del:,} = {net_loc:,}")
+    return [loc_add, loc_del, net_loc]
 
 def update_svg(filename, commit_count, repo_count, loc_data):
     tree = etree.parse(filename)
