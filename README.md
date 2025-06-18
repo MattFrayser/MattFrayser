@@ -16,4 +16,7 @@
 ### Hey I'm Matt :wave:
 Software Engineer from Richmond, VA
 
+- :computer: I'm currently working on a Password Break Notification System
+- :books: Learning: AWS & Go
+
 
