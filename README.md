@@ -13,3 +13,7 @@
   <a href="https://www.hackerrank.com/profile/mattfrayser" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/static/v1?message=HackerRank&logo=hackerrank&label=&color=2EC866&logoColor=white&labelColor=&style=for-the-badge" height="41" /></a>
 </p>
 
+### Hey I'm Matt :wave:
+Software Engineer from Richmond, VA
+
+
