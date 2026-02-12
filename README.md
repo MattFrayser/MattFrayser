@@ -1,7 +1,9 @@
 <div align="center">
 <a href="https://github.com/mattfrayser/mattfrayser">
     <picture>
-        <img src="https://raw.githubusercontent.com/mattfrayser/mattfrayser/main/darkmode.svg"  height="350">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mattfrayser/mattfrayser/main/darkmode.svg">
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mattfrayser/mattfrayser/main/lightmode.svg">
+        <img src="https://raw.githubusercontent.com/mattfrayser/mattfrayser/main/darkmode.svg" height="350" alt="Matt Frayser profile card">
     </picture>
 </a>
 </div>
@@ -14,5 +16,4 @@
 
 ### Hey I'm Matt :wave:
 Software Engineer from Richmond, VA
-
 
